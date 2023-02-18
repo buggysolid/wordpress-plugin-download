@@ -1,0 +1,11 @@
+[api]
+hostname = "api.wordpress.org"
+querystring = "/plugins/info/1.2/?action=query_plugins&request[browse]=popular&request[page]="
+[checks]
+taint = ["wpdb->prepare", "nopriv"]
+[plugins]
+active_install = 200000
+[download]
+directory = "data"
+[extraction]
+directory = "extracted_plugins"
