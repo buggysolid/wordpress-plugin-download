@@ -1,12 +1,13 @@
 import logging
-import toml
 from pathlib import Path
 
+import toml
+
 toml_config = None
-logger = logging.getLogger("wordpress-plugin-grep")
+logger = logging.getLogger(__name__)
 
 
-def get():
+def get_config():
     def __read_config():
         with open(Path("config/settings.toml")) as config_file_handle:
             logger.debug("Opened config file. %s", config_file_handle)
