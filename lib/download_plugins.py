@@ -4,6 +4,7 @@ from pathlib import Path
 import requests
 
 from lib.config import get_config
+from lib.paths import plugin_download_path
 
 logger = logging.getLogger(f"wordpress-plugin-grep.{__name__}")
 
@@ -48,10 +49,7 @@ def download_plugins(plugins_to_download):
     for plugin in plugins_to_download:
         r = requests.get(plugin)
         plugin_name = plugin.split('/')[-1]
-        config = get_config()
-        plugin_directory = config.get('download').get('directory')
-        plugin_path = Path(plugin_directory, plugin_name)
-        plugin_path.parent.mkdir(exist_ok=True)
+        plugin_path = plugin_download_path(plugin_name)
         logger.info("Writing plugin to %s", plugin_path)
         with open(plugin_path, 'wb') as plugin_file:
             plugin_file.write(r.content)
