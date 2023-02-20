@@ -2,10 +2,14 @@
 hostname = "api.wordpress.org"
 querystring = "/plugins/info/1.2/?action=query_plugins&request[browse]=popular&request[page]="
 [checks]
-taint = ["wpdb->prepare", "nopriv"]
+regular_expression_patterns = ['\$wpdb\-\>prepare', 'nopriv']
 [plugins]
-active_install = 200000
+active_install = 4000000
 [download]
 directory = "data"
 [extraction]
 directory = "extracted_plugins"
+[report]
+# The sort key should be one of the regular expression strings we are looking for.
+# Need to make this more user accessible
+sort_key = 'nopriv'

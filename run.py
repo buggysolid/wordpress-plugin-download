@@ -3,6 +3,7 @@ import logging
 
 from lib.download_plugins import get_plugins
 from lib.extract_plugins import extract_plugins
+from lib.find_functionality import check_plugins
 
 argparse = argparse.ArgumentParser("wordpress-plugin-grep", "python run.py", "A program to use the "
                                                                              "WordPress plugin API to"
@@ -30,15 +31,27 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
-if arguments.full_run:
-    logger.info("Downloading plugins.")
-    get_plugins()
-
-    logger.info("Extracting plugins.")
-    extract_plugins()
-elif arguments.download_only:
+if arguments.download_only:
     logger.info("Downloading plugins.")
     get_plugins()
 elif arguments.extract_existing:
     logger.info("Extracting already downloaded plugins.")
     extract_plugins()
+elif arguments.full_run:
+    logger.info("Downloading plugins.")
+    get_plugins()
+    logger.info("Extracting plugins.")
+    extract_plugins()
+    logger.info("Searching for features in plugins.")
+    features = check_plugins()
+    logger.info("Writing report to report.txt.")
+    with open('report.txt', 'w') as report_file_handle:
+        report_file_handle.writelines("Plugin name->Features\n")
+        for plugin in features:
+            # I can probably get this into a JSON like document and dump it that way.
+            # The client should not have to be aware of the data layout.
+            plugin_name = plugin[0]
+            plugin_features = plugin[1]
+            features_str = f"{plugin_name}->{plugin_features}\n"
+            report_file_handle.writelines(features_str)
+        logger.info("Report written.")

@@ -1,5 +1,6 @@
-from lib.config import get_config
 from pathlib import Path
+
+from lib.config import get_config
 
 
 def plugin_extraction_path():

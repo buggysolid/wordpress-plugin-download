@@ -1,8 +1,6 @@
 import logging
 import zipfile
-from pathlib import Path
 
-from lib.config import get_config
 from lib.paths import plugin_extraction_path
 
 logger = logging.getLogger(f"wordpress-plugin-grep.{__name__}")
