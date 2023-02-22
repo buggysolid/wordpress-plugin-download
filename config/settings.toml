@@ -2,7 +2,9 @@
 hostname = "api.wordpress.org"
 querystring = "/plugins/info/1.2/?action=query_plugins&request[browse]=popular&request[page]="
 [checks]
-regular_expression_patterns = ['\$wpdb\-\>prepare', 'nopriv']
+# In the future make these a dictionary so you can have a key to array mapping
+# .e.g. {'sql': ["wpdb->blah", "wpdb->other"], 'sanitize': ["esc", "esc_url"]
+regular_expression_patterns = ['\$wpdb\-\>prepare', 'nopriv', 'add_action', 'add_filter', 'WP_REST_Request', 'esc_url_raw', 'sanitize_url']
 [plugins]
 active_install = 4000000
 [download]
@@ -12,4 +14,4 @@ directory = "extracted_plugins"
 [report]
 # The sort key should be one of the regular expression strings we are looking for.
 # Need to make this more user accessible
-sort_key = 'nopriv'
+sort_key = 'esc_url_raw'

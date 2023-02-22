@@ -14,7 +14,7 @@ def __build_plugin_feature_mapping_dict(plugin_names, compiled_regular_expressio
         plugin_features[plugin_name] = dict()
         for re_pattern in compiled_regular_expression.pattern.split('|'):
             feature = re_pattern.replace('\\', '')
-            plugin_features[plugin_name][feature] = 0
+            plugin_features[plugin_name][feature.lower()] = 0
     return plugin_features
 
 
@@ -42,7 +42,7 @@ def check_plugins():
                         # case-insensitive keys for the dictionary
                         plugin_features[plugin][match.group().lower()] += 1
                 except UnicodeDecodeError:
-                    logger.error("Failed to decode unicode symbol when reading file %s", php_file)
+                    logger.warn("Failed to decode unicode symbol when reading file %s", php_file)
 
     def sort_by_inner_dictionary_value(plugin_name_to_features, sort_key_):
         # The second element of each tuple is a dictionary containing the tally of how many times
@@ -54,7 +54,7 @@ def check_plugins():
         # Example argument: ('wordpress-seo', {'$wpdb->prepare': 17, 'nopriv': 0})
         return plugin_name_to_features[1][sort_key_]
 
-    sort_key = config.get('report').get('sort_key')
+    sort_key = config.get('report').get('sort_key').lower()
     # maybe destroy the original dictionary to save some memory?
     return sorted(plugin_features.items(), key=lambda x: sort_by_inner_dictionary_value(x, sort_key_=sort_key),
                   reverse=True)
