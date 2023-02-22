@@ -4,6 +4,7 @@ import logging
 from lib.download_plugins import get_plugins
 from lib.extract_plugins import extract_plugins
 from lib.find_functionality import check_plugins
+from lib.report import write_report
 
 argparse = argparse.ArgumentParser("wordpress-plugin-grep", "python run.py", "A program to use the "
                                                                              "WordPress plugin API to"
@@ -14,6 +15,7 @@ group = argparse.add_mutually_exclusive_group()
 
 group.add_argument("-d", "--download-only", action="store_true")
 group.add_argument("-e", "--extract-existing", action="store_true")
+group.add_argument("-c", "--check-existing", action="store_true")
 group.add_argument("-f", "--full-run", action="store_true")
 
 arguments = argparse.parse_args()
@@ -31,12 +33,19 @@ ch.setFormatter(formatter)
 logger.addHandler(fh)
 logger.addHandler(ch)
 
+# Args are getting a bit unwildly.
 if arguments.download_only:
     logger.info("Downloading plugins.")
     get_plugins()
 elif arguments.extract_existing:
     logger.info("Extracting already downloaded plugins.")
     extract_plugins()
+elif arguments.check_existing:
+    logger.info("Searching extracted plugins for features.")
+    extract_plugins()
+    features = check_plugins()
+    logger.info("Writing report to report.txt.")
+    write_report(features)
 elif arguments.full_run:
     logger.info("Downloading plugins.")
     get_plugins()
@@ -45,13 +54,4 @@ elif arguments.full_run:
     logger.info("Searching for features in plugins.")
     features = check_plugins()
     logger.info("Writing report to report.txt.")
-    with open('report.txt', 'w') as report_file_handle:
-        report_file_handle.writelines("Plugin name->Features\n")
-        for plugin in features:
-            # I can probably get this into a JSON like document and dump it that way.
-            # The client should not have to be aware of the data layout.
-            plugin_name = plugin[0]
-            plugin_features = plugin[1]
-            features_str = f"{plugin_name}->{plugin_features}\n"
-            report_file_handle.writelines(features_str)
-        logger.info("Report written.")
+    write_report(features)
